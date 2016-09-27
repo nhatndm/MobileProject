@@ -1,0 +1,28 @@
+{
+  "name": "mobile-project",
+  "version": "1.0.0",
+  "description": "Mobile Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhatndm/MobileProject.git"
+  },
+  "keywords": [
+    "mobile",
+    "mobile",
+    "project"
+  ],
+  "author": "Creative Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nhatndm/MobileProject/issues"
+  },
+  "homepage": "https://github.com/nhatndm/MobileProject#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongoose": "^4.6.1"
+  }
+}
