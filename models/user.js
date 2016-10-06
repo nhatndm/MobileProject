@@ -9,7 +9,6 @@ var UserSchema = mongoose.Schema({
     facebook :{
         id : String,
         token : String,
-        email : String,
         name : String
     },   
     google :{
@@ -65,6 +64,10 @@ module.exports.createUser = function(newUser,callback){
             newUser.save(callback);
         });
     });
+};
+
+module.exports.createUserOther = function(newUser,callback){    
+    newUser.save(callback);
 };
 
 module.exports.getUserByEmail = function(email,callback){
