@@ -1,18 +1,23 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 var UserSchema = mongoose.Schema({
-    username: {
-        type : String,
+    local :{
+        email :String,
+        password : String,
+        name : String
     },
-    password:{
-        type : String,
-    },      
-    name:{
-        type:String,
-    },
-    email:{
-        type:String,
-    },
+    facebook :{
+        id : String,
+        token : String,
+        email : String,
+        name : String
+    },   
+    google :{
+        id : String,
+        token : String,
+        email : String,
+        name : String
+    }, 
     role:{
         type:String,
     },
@@ -55,15 +60,15 @@ var User = module.exports = mongoose.model('User',UserSchema);
 
 module.exports.createUser = function(newUser,callback){
     bcrypt.genSalt(10,function(err,salt){
-        bcrypt.hash(newUser.password,salt,function(err,hash){
-            newUser.password = hash;
+        bcrypt.hash(newUser.local.password,salt,function(err,hash){
+            newUser.local.password = hash;
             newUser.save(callback);
         });
     });
 };
 
-module.exports.getUserByUserName = function(username,callback){
-    var query = {username : username};
+module.exports.getUserByEmail = function(email,callback){
+    var query = {'local.email' : email};
     User.findOne(query,callback);
 };
 
@@ -71,9 +76,11 @@ module.exports.getUserById = function(id,callback){
     User.findById(id,callback);
 };
 
-module.exports.comparePassword = function(password,hash,callback){
-    bcrypt.compare(password,hash,function(err,isMatch){
-        if(err) throw err;
-        callback(null,isMatch);
-    });
+module.exports.comparePassword = function(password,hash){
+    return bcrypt.compareSync(password,hash);
+};
+
+module.exports.findUserByName = function(name,callback){
+    var query = {'local.name' : name};
+    User.find(query,callback);
 };
