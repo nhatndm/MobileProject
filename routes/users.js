@@ -3,6 +3,8 @@ var router = express.Router();
 var passport = require('passport');
 var User = require('../models/user');
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
+var  configAuth = require('../config/auth');
 
 router.get('/fail',function(req,res){
     res.status(401).send();
@@ -54,7 +56,7 @@ router.post('/register',function(req,res){
     }
 });
 
-/**Autheticate Scenario */
+/**Local Authetication */
 passport.use(new LocalStrategy(
     function(username,password,done){
         User.getUserByEmail(username,function(err,user){
@@ -69,6 +71,32 @@ passport.use(new LocalStrategy(
             }
         });
 }));
+
+/**Facebook Authentication */
+passport.use(new FacebookStrategy({
+        clientID:configAuth.facebookAuth.clientID,
+        clientSecret:configAuth.facebookAuth.clientSecret,
+        callbackURL:configAuth.facebookAuth.callbackURL
+    },
+    function(token,refreshToken,profile,done){
+        process.nextTick(function(){
+            User.findOne({'facebook.id' : profile.id},function(err,user){
+                if(err) throw err;
+                if(user){
+                    return done(null,user);
+                }else{
+                    var newUser = new User();
+                    newUser.facebook.id = profile.id;
+                    newUser.facebook.token = token;
+                    newUser.facebook.name = profile.displayName;
+                    newUser.save(function(err){
+                        if(err) throw err;
+                        return done(null,newUser);
+                    });
+                }
+            });
+        });
+    }));
 
 /**Set id to  session */
 passport.serializeUser(function(user,done){
@@ -88,6 +116,10 @@ router.post('/login',
     function(req,res){
         res.redirect('/');
 });
+
+router.get('/auth/facebook',passport.authenticate('facebook',{ scope : 'email'}));
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook',{successRedirect :'/api/users/success',failureRedirect :'/api/users/fail'}));
 
 router.get('/find/:name',function(req,res){
     User.findUserByName(req.params.name,function(err,users){
