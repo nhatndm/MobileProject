@@ -8,7 +8,9 @@ var LocalStratery = require('passport-local').Stratery;
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var expressvalidator = require('express-validator');
+var flash = require('connect-flash');
 
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/mobile',function(err){
     if(err) throw ('Please check your connection');
     console.log('Connect Successfully');
@@ -21,11 +23,10 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(cookieParser());
 /**Express session(Just define to user after)*/
 app.use(session({
-    secret: 'secret',
-    saveUninitialized : true,
-    resave : true
+   secret: 'secret',
+   saveUninitialized : true,
+   resave : true
 }));
-
 /**Express validator */
 //* Its purpose to validate the information of client
 app.use(expressvalidator({
@@ -41,14 +42,26 @@ app.use(expressvalidator({
         param: formParam,
         msg : msg,
         value : value
-    };
- }
+        };
+    }
 }));
 
 /**Passport */
 //* Its purpose to authenticate the user information
 app.use(passport.initialize());
 app.use(passport.session());
+
+/**Connect Flash */
+app.use(flash());
+
+/**Global Varable */
+app.use(function(req,res,next){
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
+    next();
+});
 
 /**Route for model */
 //* Its purpose to call api
