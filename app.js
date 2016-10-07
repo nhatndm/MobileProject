@@ -66,9 +66,11 @@ app.use(function(req,res,next){
 /**Route for model */
 //* Its purpose to call api
 var users = require('./routes/users');
+var restaurants = require('./routes/restaurants');
 /**URL for model */
 //* Its purpose to call the right api for model
 app.use('/api/users',users);
+app.use('/api/restaurants',restaurants);
 
 app.listen(port,function(){
     console.log("Server is running at :" + port);
