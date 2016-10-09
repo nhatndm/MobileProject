@@ -9,6 +9,7 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var expressvalidator = require('express-validator');
 var flash = require('connect-flash');
+var cors = require('cors');
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/mobile',function(err){
@@ -16,6 +17,12 @@ mongoose.connect('mongodb://localhost/mobile',function(err){
     console.log('Connect Successfully');
 });
 
+app.use(function(req,res,next){
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers','Content-Type');
+    next();    
+});
 /**Body parser */
 //* Its purpose to get value from client
 app.use(bodyParser.json());

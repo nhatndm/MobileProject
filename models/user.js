@@ -8,12 +8,10 @@ var UserSchema = mongoose.Schema({
     },
     facebook :{
         id : String,
-        token : String,
         name : String
     },   
     google :{
         id : String,
-        token : String,
         email : String,
         name : String
     }, 
@@ -29,8 +27,7 @@ var UserSchema = mongoose.Schema({
         ref: 'restaurant'
     }],
     avatar:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'photo'
+        type: String,
     },
     gender:{
         type: String,
@@ -75,6 +72,11 @@ module.exports.getUserByEmail = function(email,callback){
     User.findOne(query,callback);
 };
 
+module.exports.getUserByFacebookId = function(id,callback){
+    var query = {'facebook.id' : id };
+    User.findOne(query,callback);
+};
+
 module.exports.getUserById = function(id,callback){
     User.findById(id,callback);
 };
@@ -86,4 +88,8 @@ module.exports.comparePassword = function(password,hash){
 module.exports.findUserByName = function(name,callback){
     var query = {'local.name' : name};
     User.find(query,callback);
+};
+
+module.exports.updateUser = function(user,callback){
+    user.save(callback);
 };
