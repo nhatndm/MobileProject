@@ -7,13 +7,7 @@ router.get('/test',function(req,res){
 });
 router.post('/register',function(req,res){
     var userid = req.user_id;
-    /**Validate Information */
- /*   req.checkBody('name','Name is required').notEmpty();
-    req.checkBody('email','Email is not valid').isEmail();
-    req.checkBody('password','Password is required').notEmpty();
-    req.checkBody('password2','Password is not match').equals(req.body.password);
-
-    var errors = req.validationErrors();*/
+    var res_name = req.body.name;
     var newRestaurant = new Restaurant({
         user_id : userid
     });
