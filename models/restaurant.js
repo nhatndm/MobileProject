@@ -52,4 +52,19 @@ module.exports.findUserBelong = function(id,callback){
     Restaurant.findById(id).populate('user_id').exec(callback);
 };
 
+module.exports.findResLocation = function(longitude,latitude,callback){
+    var query = {
+        'location.longitude' : longitude,
+        'location.latitude' : latitude
+    };
+    Restaurant.find(query,callback);
+};
+
+module.exports.findOneRes = function(longitude,latitude,callback){
+    var query = {
+        'location.longitude' : longitude,
+        'location.latitude' : latitude
+    };
+    Restaurant.findOne(query,callback);
+};
 
