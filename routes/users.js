@@ -6,6 +6,20 @@ var LocalStrategy = require('passport-local').Strategy;
 var configAuth = require('../config/auth');
 var cors = require('cors');
 
+router.get('/testsession',function(req,res){
+    if(req.session.user){
+        res.json({
+            success : true,
+            msg: "Session have been created"
+        });
+    }else{
+        res.json({
+            success : false,
+            msg: "Session haven't been created"
+        });
+    }
+});
+
 router.post('/register',function(req,res){
     var email = req.body.email;
     var name = req.body.name;
@@ -124,7 +138,7 @@ router.post('/createFace',function(req,res){
                 },
                 last_login : newDate
             }); 
-            User.createUser(newUser,function(err,newuser){
+            User.createUserOther(newUser,function(err,newuser){
                 if(err){
                     res.status(500).send();
                 }else{
