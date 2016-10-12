@@ -5,12 +5,14 @@ var User = require('../models/user');
 var LocalStrategy = require('passport-local').Strategy;
 var configAuth = require('../config/auth');
 var cors = require('cors');
+var jwt = require('jwt-simple');
 
-router.get('/testsession',function(req,res){
+router.get('/checksession',function(req,res){
     if(req.session.user){
         res.json({
             success : true,
-            msg: "Session have been created"
+            msg: "Session have been created",
+            data : req.session.user
         });
     }else{
         res.json({
@@ -50,16 +52,18 @@ router.post('/register',function(req,res){
                 res.json({
                     success : false,
                     msg : 'This email is registered'
-                })
+                });
             }else{
                 User.createUser(newUser,function(err,user){
                 if(err){
                     res.status(500).send();
                 }else{
+                    var token = jwt.encode(user, configAuth.secret);
                     res.json({
                         success : true,
-                        msg : 'Successfully create account'
-                        })
+                        msg : 'Successfully create account',
+                        token : token
+                        });
                     }
                 });
             }
@@ -100,11 +104,11 @@ router.post('/login',function(req,res,next){
                var newDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset()*60000));
                newuser.last_login = newDate;
                User.updateUser(newuser,function(err,newuser){
-                    req.session.user = newuser;
+                    var token = jwt.encode(newuser, configAuth.secret);
                     return res.json({
                         success : true,
                         msg : 'Login successful',
-                        data : newuser
+                        token : token
                     });    
                });
            });
@@ -121,11 +125,11 @@ router.post('/createFace',function(req,res){
         if(user){
             user.last_login = newDate;
             User.updateUser(user,function(err,newuser){
-                req.session.user = newuser;
+                var token = jwt.encode(newuser, configAuth.secret);
                 res.json({
                     success : true,
                     msg : 'Login successful',
-                    data : newuser
+                    token : token
                   });    
                });
         }else{
@@ -142,11 +146,11 @@ router.post('/createFace',function(req,res){
                 if(err){
                     res.status(500).send();
                 }else{
-                    req.session.user = newuser;
+                    var token = jwt.encode(newuser, configAuth.secret);
                     res.json({
                         success : true,
                         msg : 'Successfully create account',
-                        data : newuser
+                        token : token
                     });
                 }
             });
@@ -172,14 +176,23 @@ router.get('/find/:name',function(req,res){
     });    
 });
 
-router.get('/findone/:user_id',function(req,res){
-    User.getUserById(req.params.user_id,function(err,user){
+router.get('/findone/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.getUserById(decoded._id,function(err,user){
         if(err) throw err;
-        res.json({
-            success : true,
-            data : user
+            res.json({
+                success : true,
+                data : user
+            });
         });
-    });
+    }else{
+        res.json({
+                success : false,
+                msg : "No token Provided"
+            }); 
+    }
 });
 
 router.put('/update/:user_id',function(req,res){
