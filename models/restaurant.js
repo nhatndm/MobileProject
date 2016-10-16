@@ -39,8 +39,13 @@ var RestaurantSchema = mongoose.Schema({
 
 var Restaurant = module.exports = mongoose.model('Restaurant',RestaurantSchema);
 
+/**Update + Create Restaurant */
 module.exports.createRestaurant = function(newRestaurant,callback){
     newRestaurant.save(callback);
+};
+
+module.exports.getRestaurantById = function(id,callback){
+    Restaurant.findById(id,callback);
 };
 
 module.exports.findRes = function(name,callback){
@@ -48,8 +53,33 @@ module.exports.findRes = function(name,callback){
     Restaurant.find(query,callback);
 };
 
+module.exports.findAdmin = function(id,callback){
+    var query = { user_id : id };
+    Restaurant.find(query,callback);
+};
+
 module.exports.findUserBelong = function(id,callback){
     Restaurant.findById(id).populate('user_id').exec(callback);
+};
+
+module.exports.findCommentOfRestaurant = function(id,callback){
+    Restaurant.findById(id).populate('comments').exec(callback);
+};
+
+module.exports.findRating = function(id,callback){
+    Restaurant.findById(id).populate('ratings').exec(callback);
+};
+
+module.exports.findPhotoBeLong = function(id,callback){
+    Restaurant.findById(id).populate('photos').exec(callback);
+};
+
+module.exports.findServiceBeLong = function(id,callback){
+    Restaurant.findById(id).populate('services').exec(callback);
+};
+
+module.exports.findPublicitiesBeLong = function(id,callback){
+    Restaurant.findById(id).populate('publicities').exec(callback);
 };
 
 module.exports.findResLocation = function(longitude,latitude,callback){
@@ -67,4 +97,3 @@ module.exports.findOneRes = function(longitude,latitude,callback){
     };
     Restaurant.findOne(query,callback);
 };
-
