@@ -36,6 +36,18 @@ router.post('/register',function(req,res){
     });
 });
 
+/**Input : Restaurant ID */
+/**Output : restaurant information */
+router.get('/findinfo/:id',function(req,res){
+    Restaurant.getRestaurantById(req.params.id,function(err,restaurant){
+        if(err) throw err;
+        res.json({
+            success:true,
+            data : restaurant
+        });
+    });
+});
+
 /**Input : User ID */
 /**Output : Admin of Rrestaurant */
 router.get('/findad/:id',function(req,res){
@@ -56,7 +68,7 @@ router.get('/findad/:id',function(req,res){
     });
 });
 
-/**Input : Restaurant ID */
+/**Input : Restaurant ID *(not necessary)/
 /**Output : User of Rrestaurant */
 router.get('/finduser/:id',function(req,res){
     Restaurant.findUserBelong(req.params.id,function(err,restaurant){
