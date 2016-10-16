@@ -182,7 +182,7 @@ router.get('/findone/:token',function(req,res){
         var decoded = jwt.decode(token,configAuth.secret);
         User.getUserById(decoded._id,function(err,user){
         if(err) throw err;
-            res.json({
+        res.json({
                 success : true,
                 data : user
             });
