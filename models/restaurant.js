@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var bcrypt = require('bcryptjs');
 var RestaurantSchema = mongoose.Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
