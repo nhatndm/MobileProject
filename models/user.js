@@ -93,3 +93,11 @@ module.exports.findUserByName = function(name,callback){
 module.exports.updateUser = function(user,callback){
     user.save(callback);
 };
+
+module.exports.findFoodFav = function(id,callback){
+    User.findById(id).populate('foods_favorite').exec(callback);
+};
+
+module.exports.findResFav = function(id,callback){
+    User.findById(id).populate('res_favorite').exec(callback);
+};

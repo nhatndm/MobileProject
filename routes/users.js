@@ -7,20 +7,6 @@ var configAuth = require('../config/auth');
 var cors = require('cors');
 var jwt = require('jwt-simple');
 
-router.get('/checksession',function(req,res){
-    if(req.session.user){
-        res.json({
-            success : true,
-            msg: "Session have been created",
-            data : req.session.user
-        });
-    }else{
-        res.json({
-            success : false,
-            msg: "Session haven't been created"
-        });
-    }
-});
 
 router.post('/register',function(req,res){
     var email = req.body.email;
@@ -195,8 +181,11 @@ router.get('/findone/:token',function(req,res){
     }
 });
 
-router.put('/update/:user_id',function(req,res){
-    User.getUserById(req.params.user_id,function(err,user){
+router.put('/update/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.getUserById(decoded._id,function(err,user){
         if(err) throw err;
         user.role = req.body.role;
         user.avatar = req.body.url;
@@ -207,10 +196,92 @@ router.put('/update/:user_id',function(req,res){
         user.about = req.body.about;
         user.other = req.body.other;
         User.updateUser(user,function(err,user){
-            if(err) throw err;
-            res.send(user);
+                if(err) throw err;
+                res.json({
+                    success : true,
+                    masg : "Successfully Updated"
+                });
+            });
         });
-    });
+    }
+});
+
+router.put('/addresfav/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.getUserById(decoded._id,function(err,user){
+        if(err) throw err;
+        user.res_favorite.push(req.body._id);
+        User.updateUser(user,function(err,user){
+                if(err) throw err;
+                res.json({
+                    success : true,
+                    masg : "Successfully Updated"
+                });
+            });
+        });
+    }
+});
+
+router.put('/addfoodfav/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.getUserById(decoded._id,function(err,user){
+        if(err) throw err;
+        user.foods_favorite.push(req.body._id);
+        User.updateUser(user,function(err,user){
+                if(err) throw err;
+                res.json({
+                    success : true,
+                    masg : "Successfully Updated"
+                });
+            });
+        });
+    }
+});
+
+router.get('/findresfav/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.findResFav(decoded_id,function(err,user){
+            if(err) throw err;
+            if(user.res_favorite.length == 0){
+                res.json({
+                    success : false,
+                    msg : "You dont like any restaurants"
+                });
+            }else{
+                res.json({
+                    success : true,
+                    data : user
+                });
+            }
+        });
+    }
+});
+
+router.get('/findfoodfav/:token',function(req,res){
+    var token = req.params.token;
+    if(token){
+        var decoded = jwt.decode(token,configAuth.secret);
+        User.findFoodFav(decoded_id,function(err,user){
+            if(err) throw err;
+            if(user.foods_favorite.length == 0){
+                res.json({
+                    success : false,
+                    msg : "You dont like any foods"
+                });
+            }else{
+                res.json({
+                    success : true,
+                    data : user
+                });
+            }
+        });
+    }
 });
 
 module.exports = router;

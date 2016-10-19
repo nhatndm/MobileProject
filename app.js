@@ -74,11 +74,22 @@ app.use(function(req,res,next){
 //* Its purpose to call api
 var users = require('./routes/users');
 var restaurants = require('./routes/restaurants');
+var ratings = require('./routes/ratings');
+var photos = require('./routes/photos');
+
 /**URL for model */
 //* Its purpose to call the right api for model
 app.use('/api/users',users);
 app.use('/api/restaurants',restaurants);
+app.use('/api/ratings',ratings);
+app.use('/api/photos',photos);
 
+/**URL for call CMS */
+//* Its purpose call the CMS Page
+app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/cms'));
+
+/**Set up Server */
 app.listen(port,function(){
     console.log("Server is running at :" + port);
 })
