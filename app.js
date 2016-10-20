@@ -88,7 +88,9 @@ app.use('/api/photos',photos);
 //* Its purpose call the CMS Page
 app.use(express.static(__dirname));
 app.use(express.static(__dirname + '/cms'));
-
+app.get('*',function(req,res){
+    res.sendFile(__dirname + '/cms/default.html');
+});
 /**Set up Server */
 app.listen(port,function(){
     console.log("Server is running at :" + port);
