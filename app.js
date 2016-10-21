@@ -84,13 +84,6 @@ app.use('/api/restaurants',restaurants);
 app.use('/api/ratings',ratings);
 app.use('/api/photos',photos);
 
-/**URL for call CMS */
-//* Its purpose call the CMS Page
-app.use(express.static(__dirname));
-app.use(express.static(__dirname + '/cms'));
-app.get('*',function(req,res){
-    res.sendFile(__dirname + '/cms/default.html');
-});
 /**Set up Server */
 app.listen(port,function(){
     console.log("Server is running at :" + port);
